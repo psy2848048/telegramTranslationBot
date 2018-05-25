@@ -74,7 +74,7 @@ class TranslatorBot(object):
         lastnumber = self._readLastUpdate(source_lang, target_lang)
         res = self._crawlUpdate(apiEndpoint_update, lastnumber + 1)
 
-        update_id = lastnumber + 1
+        update_id = lastnumber
         for item in res:
             if item['update_id'] < lastnumber:
                 continue
