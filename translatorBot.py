@@ -76,6 +76,9 @@ class TranslatorBot(object):
 
         update_id = lastnumber + 1
         for item in res:
+            if item['update_id'] < lastnumber:
+                continue
+
             update_id = max(update_id, item['update_id'])
             chat_id = item['message']['chat']['id']
             text_before = item['message']['text']
