@@ -72,7 +72,7 @@ class TranslatorBot(object):
         apiEndpoint_send = "https://api.telegram.org/bot575363781:AAGCIxEWupZhjlqBJwPvD6eM_Lin3jXdFnE/sendMessage"
 
         lastnumber = self._readLastUpdate(source_lang, target_lang)
-        res = self._crawlUpdate(apiEndpoint_update, lastnumber)
+        res = self._crawlUpdate(apiEndpoint_update, lastnumber+1)
 
         update_id = lastnumber
         for item in res:
