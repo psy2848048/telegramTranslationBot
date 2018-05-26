@@ -62,7 +62,7 @@ class TranslatorBot(object):
 
         result_ciceron = data.get('ciceron')
         result_google = data.get('google')
-        message = "LangChain:\n{}\n\nGoogle:\n{}\n\nPowered by LangChain\nTelegram EN: https://t.me/Langchain\nTelegram KR: https://t.me/langchain_kr".format(result_ciceron, result_google)
+        message = "LangChain:\n{}\n\nGoogle:\n{}\n\nPowered by LangChain".format(result_ciceron, result_google)
 
         return message
 
