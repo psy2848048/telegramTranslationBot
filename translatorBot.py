@@ -87,6 +87,10 @@ class TranslatorBot(object):
                 continue
 
             update_id = max(update_id, item['update_id'])
+            whole_message = item.get('message')
+            if whole_message is None:
+                continue
+
             chat_id = item['message']['chat']['id']
             message_id = item['message']['message_id']
             text_before = item['message'].get('text')
