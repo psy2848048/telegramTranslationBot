@@ -121,6 +121,9 @@ class TranslatorBot(object):
     def koEnTranslation(self):
         self._main('ko', 'en', self.keys['koen'], '!koen')
 
+    def enKoTranslation(self):
+        self._main('en', 'ko', self.keys['koen'], '!enko')
+
 
 if __name__ == "__main__":
     translator = TranslatorBot()
