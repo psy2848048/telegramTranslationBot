@@ -77,7 +77,7 @@ class TranslatorBot(object):
                     , "reply_to_message_id": message_id
                   }
 
-        while:
+        while True:
             resp = requests.post(api_endpoint, data=payload, timeout=5)
             if resp.status_code == 200:
                 break
