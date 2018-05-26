@@ -3,6 +3,9 @@ import json
 
 
 class TranslatorBot(object):
+    def __init__(self):
+        self.keys = self._readAPIKey()
+
     def _readLastUpdate(self, source_lang, target_lang):
         try:
             with open('lastUpdate{}{}.txt'.format(source_lang, target_lang), 'r') as f:
@@ -13,6 +16,11 @@ class TranslatorBot(object):
         except:
             self._writeUpdate(source_lang, target_lang, 0)
             return 0
+
+    def _readAPIKey(self):
+        with open('apikey.json', 'r') as f:
+            keys = json.load(f)
+        return keys
 
     def _writeUpdate(self, source_lang, target_lang, number):
         with open('lastUpdate{}{}.txt'.format(source_lang, target_lang), 'w') as f:
@@ -54,22 +62,21 @@ class TranslatorBot(object):
 
         result_ciceron = data.get('ciceron')
         result_google = data.get('google')
-        message = "LangChain:\n{}\n\nGoogle:\n{}".format(result_ciceron, result_google)
+        message = "LangChain:\n{}\n\nGoogle:\n{}\n\nPowered by LangChain\nTelegram EN: https://t.me/Langchain\nTelegram KR: https://t.me/langchain_kr".format(result_ciceron, result_google)
 
         return message
 
-    def _sendMessage(self, api_endpoint, chat_id, message):
+    def _sendMessage(self, api_endpoint, chat_id, message_id, message):
         payload = {
                       "chat_id": chat_id
                     , "text": message
+                    , "reply_to_message_id": message_id
                   }
         requests.post(api_endpoint, data=payload, timeout=5)
 
-    def koEnTranslation(self):
-        source_lang = 'ko'
-        target_lang = 'en'
-        apiEndpoint_update = "https://api.telegram.org/bot575363781:AAGCIxEWupZhjlqBJwPvD6eM_Lin3jXdFnE/getUpdates"
-        apiEndpoint_send = "https://api.telegram.org/bot575363781:AAGCIxEWupZhjlqBJwPvD6eM_Lin3jXdFnE/sendMessage"
+    def _main(self, source_lang, target_lang, apiKey, wakeup_key):
+        apiEndpoint_update = "https://api.telegram.org/bot{}/getUpdates".format(apiKey)
+        apiEndpoint_send = "https://api.telegram.org/bot{}/sendMessage".format(apiKey)
 
         lastnumber = self._readLastUpdate(source_lang, target_lang)
         res = self._crawlUpdate(apiEndpoint_update, lastnumber+1)
@@ -81,13 +88,19 @@ class TranslatorBot(object):
 
             update_id = max(update_id, item['update_id'])
             chat_id = item['message']['chat']['id']
-            text_before = item['message']['text']
-            print(text_before)
-            message = self._translate(source_lang, target_lang, text_before)
-            print(message)
-            self._sendMessage(apiEndpoint_send, chat_id, message)
+            message_id = item['message']['message_id']
+            text_before = item['message']['text'].strip()
+            if text_before.startswith(wakeup_key):
+                text_before = text_before.replace(wakeup_key, '').strip()
+                print(text_before)
+                message = self._translate(source_lang, target_lang, text_before)
+                print(message)
+                self._sendMessage(apiEndpoint_send, chat_id, message_id, message)
 
         self._writeUpdate(source_lang, target_lang, update_id)
+
+    def koEnTranslation(self):
+        self._main('ko', 'en', self.keys['koen'], '!koen')
 
 
 if __name__ == "__main__":
