@@ -89,7 +89,12 @@ class TranslatorBot(object):
             update_id = max(update_id, item['update_id'])
             chat_id = item['message']['chat']['id']
             message_id = item['message']['message_id']
-            text_before = item['message']['text'].strip()
+            text_before = item['message'].get('text')
+            if text_before is None:
+                continue
+            else:
+                text_before = text_before.strip()
+
             if text_before.startswith(wakeup_key):
                 text_before = text_before.replace(wakeup_key, '').strip()
                 print(text_before)
