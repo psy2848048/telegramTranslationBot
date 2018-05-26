@@ -103,7 +103,7 @@ class TranslatorBot(object):
             chat_id = item['message']['chat']['id']
             message_id = item['message']['message_id']
             text_before = item['message'].get('text')
-            user_name = item['message']['from']['usernema']
+            user_name = item['message'].get('from').get('username')
             if text_before is None:
                 continue
             else:
