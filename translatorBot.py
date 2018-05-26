@@ -78,10 +78,13 @@ class TranslatorBot(object):
                     , "reply_to_message_id": message_id
                   }
 
-        while True:
+        for _ in range(100):
             resp = requests.post(api_endpoint, data=payload, timeout=5)
             if resp.status_code == 200:
                 break
+
+        else:
+            print("Telegram deadlock")
 
     def _main(self, source_lang, target_lang, apiKey, wakeup_key):
         apiEndpoint_update = "https://api.telegram.org/bot{}/getUpdates".format(apiKey)
