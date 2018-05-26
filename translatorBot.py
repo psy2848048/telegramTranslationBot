@@ -122,7 +122,7 @@ class TranslatorBot(object):
         self._main('ko', 'en', self.keys['koen'], '!koen')
 
     def enKoTranslation(self):
-        self._main('en', 'ko', self.keys['koen'], '!enko')
+        self._main('en', 'ko', self.keys['enko'], '!enko')
 
 
 if __name__ == "__main__":
