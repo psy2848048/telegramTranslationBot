@@ -45,7 +45,7 @@ class TranslatorBot(object):
 
         return data[0].strip(), data[1].strip()
 
-    def _translate(self, source_lang, target_lang, sentence):
+    def _translate(self, source_lang, target_lang, sentence, memo):
         endpoint = "https://translator.ciceron.me/translate"
         source_lang_id = self._get_lang_id(source_lang)
         target_lang_id = self._get_lang_id(target_lang)
@@ -54,6 +54,7 @@ class TranslatorBot(object):
                   , "target_lang_id": target_lang_id
                   , "sentence": sentence
                   , "where": "api"
+                  , "memo": memo
                 }
         key, value = self._get_mail()
         payload[key] = value
@@ -102,6 +103,7 @@ class TranslatorBot(object):
             chat_id = item['message']['chat']['id']
             message_id = item['message']['message_id']
             text_before = item['message'].get('text')
+            user_name = item['message']['from']['usernema']
             if text_before is None:
                 continue
             else:
@@ -110,7 +112,7 @@ class TranslatorBot(object):
             if text_before.startswith(wakeup_key):
                 text_before = text_before.replace(wakeup_key, '').strip()
                 print(text_before)
-                message = self._translate(source_lang, target_lang, text_before)
+                message = self._translate(source_lang, target_lang, text_before, "Telegram:{}".format(user_name))
                 print(message)
                 self._sendMessage(apiEndpoint_send, chat_id, message_id, message)
 
