@@ -57,8 +57,12 @@ class TranslatorBot(object):
                 }
         key, value = self._get_mail()
         payload[key] = value
-        resp = requests.post(endpoint, data=payload, timeout=10, verify=False)
-        data = resp.json() if resp.status_code == 200 else {}
+        try:
+            resp = requests.post(endpoint, data=payload, timeout=10, verify=False)
+            data = resp.json() if resp.status_code == 200 else {"ciceron":"Not enough servers. Investment is required.", 'google':""}
+
+        except:
+            data = {"ciceron":"Not enough servers. Investment is required.", 'google':""}
 
         result_ciceron = data.get('ciceron')
         result_google = data.get('google')
@@ -72,7 +76,11 @@ class TranslatorBot(object):
                     , "text": message
                     , "reply_to_message_id": message_id
                   }
-        requests.post(api_endpoint, data=payload, timeout=5)
+
+        while:
+            resp = requests.post(api_endpoint, data=payload, timeout=5)
+            if resp.status_code == 200:
+                break
 
     def _main(self, source_lang, target_lang, apiKey, wakeup_key):
         apiEndpoint_update = "https://api.telegram.org/bot{}/getUpdates".format(apiKey)
