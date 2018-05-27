@@ -107,6 +107,8 @@ class TranslatorBot(object):
             message_id = item['message']['message_id']
             text_before = item['message'].get('text')
             user_name = item['message'].get('from').get('username')
+            chat_type = item['message']['chat']['type']
+            group_title = item['message']['chat'].get('title')
             if text_before is None:
                 continue
             else:
@@ -115,7 +117,7 @@ class TranslatorBot(object):
             if text_before.startswith(wakeup_key):
                 text_before = text_before.replace(wakeup_key, '').strip()
                 print(text_before)
-                message = self._translate(source_lang, target_lang, text_before, "Telegram:{}".format(user_name))
+                message = self._translate(source_lang, target_lang, text_before, "Telegram:{}|{}|{}".format(user_name, chat_type, group_title))
                 print(message)
                 self._sendMessage(apiEndpoint_send, chat_id, message_id, message)
 
