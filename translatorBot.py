@@ -167,12 +167,12 @@ class TranslatorBot(object):
                 text_before = text_before.strip()
 
             if text_before.startswith(wakeup_key):
-                if source_lang in ["en", "ko"] and target_lang in ["en", "ko"]:
-                    continue
-
                 language_pair = text_before[:5]
                 source_lang = language_pair[1:3]
                 target_lang = language_pair[3:5]
+
+                if source_lang in ["en", "ko"] and target_lang in ["en", "ko"]:
+                    continue
 
                 text_before = text_before.replace(language_pair, '').strip()
                 print(text_before)
