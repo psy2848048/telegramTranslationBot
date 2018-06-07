@@ -80,7 +80,7 @@ class TranslatorBot(object):
             if source_lang in ["en", "ko"] and target_lang in ["en", "ko"]:
                 message = "Langchain Translation bot is unified into one account!\nhttp://t.me/langchainbot\n\nLangChain:\n{}\n\nGoogle:\n{}\n\nPowered by LangChain\n\nUsage: ![Source language][Target language] [Sentence]\nKorean - ko / English - en / Japanese - ja / Chinese - zh\nThai - th / Spanish - es / Portuguese - pt / Vietnamese - vi\nGerman - de / French - fr".format(result_ciceron, result_google)
             else:
-                message = "{}\n\nPowered by LangChain\nUsage: ![Source language][Target language] [Sentence]\nKorean - ko / English - en / Japanese - ja / Chinese - zh\nThai - th / Spanish - es / Portuguese - pt / Vietnamese - vi\nGerman - de / French - fr".format(result_google)
+                message = "{}\n\nPowered by LangChain\n\nUsage: ![Source language][Target language] [Sentence]\nKorean - ko / English - en / Japanese - ja / Chinese - zh\nThai - th / Spanish - es / Portuguese - pt / Vietnamese - vi\nGerman - de / French - fr".format(result_google)
 
         else:
             message = "Oops! wrong language code seems to be inserted!\nPlease check the usage!\n\nUsage: ![Source language][Target language] [Sentence]\nKorean - ko / English - en / Japanese - ja / Chinese - zh\nThai - th / Spanish - es / Portuguese - pt / Vietnamese - vi\nGerman - de / French - fr"
