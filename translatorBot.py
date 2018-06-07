@@ -78,7 +78,7 @@ class TranslatorBot(object):
             result_ciceron = data.get('ciceron')
             result_google = data.get('google')
             if source_lang in ["en", "ko"] and target_lang in ["en", "ko"]:
-                message = "LangChain:\n{}\n\nGoogle:\n{}\n\nPowered by LangChain".format(result_ciceron, result_google)
+                message = "Langchain Translation bot is unified into one account!\nhttp://t.me/langchainbot\n\nLangChain:\n{}\n\nGoogle:\n{}\n\nPowered by LangChain".format(result_ciceron, result_google)
             else:
                 message = "{}\n\nPowered by LangChain\nUsage: ![Source language][Target language] [Sentence]\nKorean-ko, English-en, Japanese-ja, Chinese-zh".format(result_google)
 
