@@ -33,10 +33,19 @@ class TranslatorBot(object):
         return data['result']
 
     def _get_lang_id(self, lang):
-        if lang == "ko":
-            return 1
-        elif lang == "en":
-            return 2
+        lang_table = {
+                "ko": 1
+              , "en": 2
+              , "zh": 4
+              , "th": 6
+              , "ja": 8
+              , "es": 9
+              , "pt": 10
+              , "vi": 11
+              , "de": 12
+              , "fr": 13
+                }
+        return lang_table[lang]
 
     def _get_mail(self):
         with open('getMail.txt', 'r') as f:
@@ -67,7 +76,10 @@ class TranslatorBot(object):
 
         result_ciceron = data.get('ciceron')
         result_google = data.get('google')
-        message = "LangChain:\n{}\n\nGoogle:\n{}\n\nPowered by LangChain".format(result_ciceron, result_google)
+        if source_lang in ["en", "ko"] and target_lang in ["en", "ko"]:
+            message = "LangChain:\n{}\n\nGoogle:\n{}\n\nPowered by LangChain".format(result_ciceron, result_google)
+        else:
+            message = "{}\n\nPowered by LangChain\nUsage: ![Source language][Target language] [Sentence]\nKorean-ko, English-en, Japanese-ja, Chinese-zh".format(result_google)
 
         return message
 
@@ -123,11 +135,58 @@ class TranslatorBot(object):
 
         self._writeUpdate(source_lang, target_lang, update_id)
 
+    def _generalMain(self, apiKey, wakeup_key):
+        apiEndpoint_update = "https://api.telegram.org/bot{}/getUpdates".format(apiKey)
+        apiEndpoint_send = "https://api.telegram.org/bot{}/sendMessage".format(apiKey)
+
+        lastnumber = self._readLastUpdate("ge", "ge")
+        res = self._crawlUpdate(apiEndpoint_update, lastnumber+1)
+
+        update_id = lastnumber
+        source_lang = ""
+        target_lang = ""
+
+        for item in res:
+            if item['update_id'] < lastnumber:
+                continue
+
+            update_id = max(update_id, item['update_id'])
+            whole_message = item.get('message')
+            if whole_message is None:
+                continue
+
+            chat_id = item['message']['chat']['id']
+            message_id = item['message']['message_id']
+            text_before = item['message'].get('text')
+            user_name = item['message'].get('from').get('username')
+            chat_type = item['message']['chat']['type']
+            group_title = item['message']['chat'].get('title')
+            if text_before is None:
+                continue
+            else:
+                text_before = text_before.strip()
+
+            if text_before.startswith(wakeup_key):
+                language_pair = text_before[:5]
+                source_lang = language_pair[1:3]
+                target_lang = language_pair[3:5]
+
+                text_before = text_before.replace(language_pair, '').strip()
+                print(text_before)
+                message = self._translate(source_lang, target_lang, text_before, "Telegram:{}|{}|{}".format(user_name, chat_type, group_title))
+                print(message)
+                self._sendMessage(apiEndpoint_send, chat_id, message_id, message)
+
+        self._writeUpdate("ge", "ge", update_id)
+
     def koEnTranslation(self):
         self._main('ko', 'en', self.keys['koen'], '!koen')
 
     def enKoTranslation(self):
         self._main('en', 'ko', self.keys['enko'], '!enko')
+
+    def generalTranslation(self):
+        self._generalMain(self.keys['gege'], '!')
 
 
 if __name__ == "__main__":
