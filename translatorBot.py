@@ -45,7 +45,7 @@ class TranslatorBot(object):
               , "de": 12
               , "fr": 13
                 }
-        return lang_table[lang]
+        return lang_table.get(lang)
 
     def _get_mail(self):
         with open('getMail.txt', 'r') as f:
@@ -67,19 +67,23 @@ class TranslatorBot(object):
                 }
         key, value = self._get_mail()
         payload[key] = value
-        try:
-            resp = requests.post(endpoint, data=payload, timeout=10, verify=False)
-            data = resp.json() if resp.status_code == 200 else {"ciceron":"Not enough servers. Investment is required.", 'google':""}
+        if source_lang_id != None and target_lang_id != None:
+            try:
+                resp = requests.post(endpoint, data=payload, timeout=10, verify=False)
+                data = resp.json() if resp.status_code == 200 else {"ciceron":"Not enough servers. Investment is required.", 'google':""}
 
-        except:
-            data = {"ciceron":"Not enough servers. Investment is required.", 'google':""}
+            except:
+                data = {"ciceron":"Not enough servers. Investment is required.", 'google':""}
 
-        result_ciceron = data.get('ciceron')
-        result_google = data.get('google')
-        if source_lang in ["en", "ko"] and target_lang in ["en", "ko"]:
-            message = "LangChain:\n{}\n\nGoogle:\n{}\n\nPowered by LangChain".format(result_ciceron, result_google)
+            result_ciceron = data.get('ciceron')
+            result_google = data.get('google')
+            if source_lang in ["en", "ko"] and target_lang in ["en", "ko"]:
+                message = "LangChain:\n{}\n\nGoogle:\n{}\n\nPowered by LangChain".format(result_ciceron, result_google)
+            else:
+                message = "{}\n\nPowered by LangChain\nUsage: ![Source language][Target language] [Sentence]\nKorean-ko, English-en, Japanese-ja, Chinese-zh".format(result_google)
+
         else:
-            message = "{}\n\nPowered by LangChain\nUsage: ![Source language][Target language] [Sentence]\nKorean-ko, English-en, Japanese-ja, Chinese-zh".format(result_google)
+            message = "Oops! wrong language code seems to be inserted!\nPlease check the usage!\n\nUsage: ![Source language][Target language] [Sentence]\nKorean-ko, English-en, Japanese-ja, Chinese-zh"
 
         return message
 
