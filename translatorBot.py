@@ -54,36 +54,34 @@ class TranslatorBot(object):
 
         return data[0].strip(), data[1].strip()
 
-    def _translate(self, source_lang, target_lang, sentence, memo):
-        endpoint = "https://translator.ciceron.me/translate"
-        source_lang_id = self._get_lang_id(source_lang)
-        target_lang_id = self._get_lang_id(target_lang)
+    def _translate(self, source_lang, target_lang, sentence, order_user, memo):
+        endpoint = "http://translator.ciceron.me:5000/api/v2/internal/translate"
         payload = {
-                    "source_lang_id": source_lang_id
-                  , "target_lang_id": target_lang_id
+                    "source_lang": source_lang
+                  , "target_lang": target_lang
                   , "sentence": sentence
-                  , "where": "api"
+                  , "tag": "telegram"
+                  , "order_user": order_user
+                  , "media": "telegram"
+                  , "where_contributed": "telegram"
                   , "memo": memo
                 }
+        headers = {"Authorization": self.keys['apikey']}
         key, value = self._get_mail()
         payload[key] = value
-        if source_lang_id != None and target_lang_id != None:
-            try:
-                resp = requests.post(endpoint, data=payload, timeout=10, verify=False)
-                data = resp.json() if resp.status_code == 200 else {"ciceron":"Not enough servers. Investment is required.", 'google':""}
+        try:
+            resp = requests.post(endpoint, data=payload, headers=headers, timeout=10, verify=False)
+            data = resp.json() if resp.status_code == 200 else {"ciceron":"Not enough servers. Investment is required.", 'google':""}
 
-            except:
-                data = {"ciceron":"Not enough servers. Investment is required.", 'google':""}
+        except:
+            data = {"ciceron":"Not enough servers. Investment is required.", 'google':""}
 
-            result_ciceron = data.get('ciceron')
-            result_google = data.get('google')
-            if source_lang in ["en", "ko"] and target_lang in ["en", "ko"]:
-                message = "Langchain Translation bot is unified into one account!\nhttp://t.me/langchainbot\n\nLangChain:\n{}\n\nGoogle:\n{}\n\nPowered by LangChain\n\nUsage: ![Source language][Target language] [Sentence]\nKorean - ko / English - en / Japanese - ja / Chinese - zh\nThai - th / Spanish - es / Portuguese - pt / Vietnamese - vi\nGerman - de / French - fr".format(result_ciceron, result_google)
-            else:
-                message = "{}\n\nPowered by LangChain\n\nUsage: ![Source language][Target language] [Sentence]\nKorean - ko / English - en / Japanese - ja / Chinese - zh\nThai - th / Spanish - es / Portuguese - pt / Vietnamese - vi\nGerman - de / French - fr".format(result_google)
-
+        result_ciceron = data.get('ciceron')
+        result_google = data.get('google')
+        if source_lang in ["en", "ko"] and target_lang in ["en", "ko"]:
+            message = "LangChain:\n{}\n\nGoogle:\n{}\n\nPowered by LangChain\n\nUsage: ![Source language][Target language] [Sentence]\nKorean - ko / English - en / Japanese - ja / Chinese - zh\nThai - th / Spanish - es / Portuguese - pt / Vietnamese - vi\nGerman - de / French - fr".format(result_ciceron, result_google)
         else:
-            message = "Oops! wrong language code seems to be inserted!\nPlease check the usage!\n\nUsage: ![Source language][Target language] [Sentence]\nKorean - ko / English - en / Japanese - ja / Chinese - zh\nThai - th / Spanish - es / Portuguese - pt / Vietnamese - vi\nGerman - de / French - fr"
+            message = "{}\n\nPowered by LangChain\n\nUsage: ![Source language][Target language] [Sentence]\nKorean - ko / English - en / Japanese - ja / Chinese - zh\nThai - th / Spanish - es / Portuguese - pt / Vietnamese - vi\nGerman - de / French - fr".format(result_google)
 
         return message
 
@@ -133,7 +131,7 @@ class TranslatorBot(object):
             if text_before.startswith(wakeup_key):
                 text_before = text_before.replace(wakeup_key, '').strip()
                 print(text_before)
-                message = self._translate(source_lang, target_lang, text_before, "Telegram:{}|{}|{}".format(user_name, chat_type, group_title))
+                message = self._translate(source_lang, target_lang, text_before, user_name, "Telegram:{}|{}|{}".format(user_name, chat_type, group_title))
                 print(message)
                 self._sendMessage(apiEndpoint_send, chat_id, message_id, message)
 
@@ -177,7 +175,7 @@ class TranslatorBot(object):
 
                 text_before = text_before.replace(language_pair, '').strip()
                 print(text_before)
-                message = self._translate(source_lang, target_lang, text_before, "Telegram:{}|{}|{}".format(user_name, chat_type, group_title))
+                message = self._translate(source_lang, target_lang, text_before, user_name, "Telegram:{}|{}|{}".format(user_name, chat_type, group_title))
                 print(message)
                 self._sendMessage(apiEndpoint_send, chat_id, message_id, message)
 
