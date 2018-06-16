@@ -79,17 +79,33 @@ class TranslatorBot(object):
         result_ciceron = data.get('ciceron')
         result_google = data.get('google')
         if source_lang in ["en", "ko"] and target_lang in ["en", "ko"]:
-            message = "LangChain:\n{}\n\nGoogle:\n{}\n\nPowered by LangChain\n\nUsage: ![Source language][Target language] [Sentence]\nKorean - ko / English - en / Japanese - ja / Chinese - zh\nThai - th / Spanish - es / Portuguese - pt / Vietnamese - vi\nGerman - de / French - fr".format(result_ciceron, result_google)
+            message = "LangChain:\n**{}**\n\nGoogle:\n**{}**\n\nPowered by LangChain\n\nUsage: ![Source language][Target language] [Sentence]\nKorean - ko / English - en / Japanese - ja / Chinese - zh\nThai - th / Spanish - es / Portuguese - pt / Vietnamese - vi\nGerman - de / French - fr".format(result_ciceron, result_google)
+            message_usage = "Usage: ![Source language][Target language] [Sentence]\nKorean - ko / English - en / Japanese - ja / Chinese - zh\nThai - th / Spanish - es / Portuguese - pt / Vietnamese - vi\nGerman - de / French - fr"
         else:
-            message = "{}\n\nPowered by LangChain\n\nUsage: ![Source language][Target language] [Sentence]\nKorean - ko / English - en / Japanese - ja / Chinese - zh\nThai - th / Spanish - es / Portuguese - pt / Vietnamese - vi\nGerman - de / French - fr".format(result_google)
+            message = "**{}**\n\nPowered by LangChain\n\nUsage: ![Source language][Target language] [Sentence]\nKorean - ko / English - en / Japanese - ja / Chinese - zh\nThai - th / Spanish - es / Portuguese - pt / Vietnamese - vi\nGerman - de / French - fr".format(result_google)
+            message_usage = "Usage: ![Source language][Target language] [Sentence]\nKorean - ko / English - en / Japanese - ja / Chinese - zh\nThai - th / Spanish - es / Portuguese - pt / Vietnamese - vi\nGerman - de / French - fr"
 
-        return message
+        return message, message_usage
 
     def _sendMessage(self, api_endpoint, chat_id, message_id, message):
         payload = {
                       "chat_id": chat_id
                     , "text": message
                     , "reply_to_message_id": message_id
+                  }
+
+        for _ in range(100):
+            resp = requests.post(api_endpoint, data=payload, timeout=5)
+            if resp.status_code == 200:
+                break
+
+        else:
+            print("Telegram deadlock")
+
+    def _sendNormalMessage(self, api_endpoint, chat_id, message):
+        payload = {
+                      "chat_id": chat_id
+                    , "text": message
                   }
 
         for _ in range(100):
@@ -131,9 +147,10 @@ class TranslatorBot(object):
             if text_before.startswith(wakeup_key):
                 text_before = text_before.replace(wakeup_key, '').strip()
                 print(text_before)
-                message = self._translate(source_lang, target_lang, text_before, user_name, "Telegram:{}|{}|{}".format(user_name, chat_type, group_title))
+                message, message_usage = self._translate(source_lang, target_lang, text_before, user_name, "Telegram:{}|{}|{}".format(user_name, chat_type, group_title))
                 print(message)
                 self._sendMessage(apiEndpoint_send, chat_id, message_id, message)
+                self._sendNormalMessage(apiEndpoint_send, chat_id, message_usage)
 
         self._writeUpdate(source_lang, target_lang, update_id)
 
@@ -175,9 +192,10 @@ class TranslatorBot(object):
 
                 text_before = text_before.replace(language_pair, '').strip()
                 print(text_before)
-                message = self._translate(source_lang, target_lang, text_before, user_name, "Telegram:{}|{}|{}".format(user_name, chat_type, group_title))
+                message, message_usage = self._translate(source_lang, target_lang, text_before, user_name, "Telegram:{}|{}|{}".format(user_name, chat_type, group_title))
                 print(message)
                 self._sendMessage(apiEndpoint_send, chat_id, message_id, message)
+                self._sendNormalMessage(apiEndpoint_send, chat_id, message_usage)
 
         self._writeUpdate("ge", "ge", update_id)
 
