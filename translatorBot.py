@@ -115,6 +115,24 @@ class TranslatorBot(object):
 
         return resp.json()
 
+    def _editMessage(self, api_endpoint, chat_id, message_id, message):
+        payload = {
+                      "chat_id": chat_id
+                    , "text": message
+                    , "message_id": message_id
+                    , "parse_mode": "Markdown"
+                  }
+
+        for _ in range(100):
+            resp = requests.post(api_endpoint, data=payload, timeout=5)
+            if resp.status_code == 200:
+                break
+
+        else:
+            print("Telegram deadlock")
+
+        return resp.json()
+
     def _sendNormalMessage(self, api_endpoint, chat_id, message):
         payload = {
                       "chat_id": chat_id
@@ -202,7 +220,6 @@ class TranslatorBot(object):
 
             if text_before.startswith(wakeup_key):
                 ret = self._sendMessage(apiEndpoint_send, chat_id, message_id, "Translating...")
-                self._sendNormalMessage(apiEndpoint_send, chat_id, message_usage)
 
                 new_chat_id = ret['result']['chat']['id']
                 new_message_id = ret['result']['message_id']
@@ -215,7 +232,8 @@ class TranslatorBot(object):
                 print(text_before)
                 message, message_usage = self._translate(source_lang, target_lang, text_before, user_name, "Telegram:{}|{}|{}".format(user_name, chat_type, group_title))
                 print(message)
-                self._sendMessage(apiEndpoint_edit, new_chat_id, new_message_id, message)
+                self._editMessage(apiEndpoint_edit, new_chat_id, new_message_id, message)
+                self._sendNormalMessage(apiEndpoint_send, chat_id, message_usage)
 
         self._writeUpdate("ge", "ge", update_id)
 
