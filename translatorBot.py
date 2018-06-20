@@ -86,14 +86,18 @@ class TranslatorBot(object):
             message += "Google:\n*{}*\n\n".format(result_google)
             message += "Powered by LangChain"
 
-            message_usage = "Usage: ![Source language][Target language] [Sentence]\nKorean - ko / English - en / Japanese - ja / Chinese - zh\nThai - th / Spanish - es / Portuguese - pt / Vietnamese - vi\nGerman - de / French - fr"
+            message_usage  = "Usage: !'Source language''Target language' 'Sentence'\n"
+            message_usage  = "Ex) !enko Hello?\n\n"
+            message_usage += "Korean - ko / English - en / Japanese - ja / Chinese - zh\nThai - th / Spanish - es / Portuguese - pt / Vietnamese - vi\nGerman - de / French - fr"
         else:
             message = "Google:\n*{}*\n\n".format(result_google)
             if result_human is not None:
                 message += "Human guided:\n*{}*\n\n".format(result_human)
             message += "Powered by LangChain"
 
-            message_usage = "Usage: ![Source language][Target language] [Sentence]\nKorean - ko / English - en / Japanese - ja / Chinese - zh\nThai - th / Spanish - es / Portuguese - pt / Vietnamese - vi\nGerman - de / French - fr"
+            message_usage  = "Usage: !'Source language''Target language' 'Sentence'\n"
+            message_usage  = "Ex) !enko Hello?\n\n"
+            message_usage += "Korean - ko / English - en / Japanese - ja / Chinese - zh\nThai - th / Spanish - es / Portuguese - pt / Vietnamese - vi\nGerman - de / French - fr"
 
         return message, message_usage
 
