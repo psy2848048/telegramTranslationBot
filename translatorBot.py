@@ -78,11 +78,21 @@ class TranslatorBot(object):
 
         result_ciceron = data.get('ciceron')
         result_google = data.get('google')
+        result_human = data.get('human')
         if source_lang in ["en", "ko"] and target_lang in ["en", "ko"]:
-            message = "LangChain:\n*{}*\n\nGoogle:\n*{}*\n\nPowered by LangChain".format(result_ciceron, result_google)
+            message  = "LangChain:\n*{}*\n\n".format(result_ciceron)
+            if result_human is not None:
+                message += "Human guided:\n*{}*\n\n".format(result_human)
+            message += "Google:\n*{}*\n\n".format(result_google)
+            message += "Powered by LangChain"
+
             message_usage = "Usage: ![Source language][Target language] [Sentence]\nKorean - ko / English - en / Japanese - ja / Chinese - zh\nThai - th / Spanish - es / Portuguese - pt / Vietnamese - vi\nGerman - de / French - fr"
         else:
-            message = "*{}*\n\nPowered by LangChain".format(result_google)
+            message = "Google:\n*{}*\n\n".format(result_google)
+            if result_human is not None:
+                message += "Human guided:\n*{}*\n\n".format(result_human)
+            message += "Powered by LangChain"
+
             message_usage = "Usage: ![Source language][Target language] [Sentence]\nKorean - ko / English - en / Japanese - ja / Chinese - zh\nThai - th / Spanish - es / Portuguese - pt / Vietnamese - vi\nGerman - de / French - fr"
 
         return message, message_usage
@@ -102,6 +112,8 @@ class TranslatorBot(object):
 
         else:
             print("Telegram deadlock")
+
+        return resp.json()
 
     def _sendNormalMessage(self, api_endpoint, chat_id, message):
         payload = {
@@ -159,6 +171,7 @@ class TranslatorBot(object):
     def _generalMain(self, apiKey, wakeup_key):
         apiEndpoint_update = "https://api.telegram.org/bot{}/getUpdates".format(apiKey)
         apiEndpoint_send = "https://api.telegram.org/bot{}/sendMessage".format(apiKey)
+        apiEndpoint_edit = "https://api.telegram.org/bot{}/editMessageText".format(apiKey)
 
         lastnumber = self._readLastUpdate("ge", "ge")
         res = self._crawlUpdate(apiEndpoint_update, lastnumber+1)
@@ -188,6 +201,12 @@ class TranslatorBot(object):
                 text_before = text_before.strip()
 
             if text_before.startswith(wakeup_key):
+                ret = self._sendMessage(apiEndpoint_send, chat_id, message_id, "Translating...")
+                self._sendNormalMessage(apiEndpoint_send, chat_id, message_usage)
+
+                new_chat_id = ret['result']['chat']['id']
+                new_message_id = ret['result']['message_id']
+
                 language_pair = text_before[:5]
                 source_lang = language_pair[1:3]
                 target_lang = language_pair[3:5]
@@ -196,8 +215,7 @@ class TranslatorBot(object):
                 print(text_before)
                 message, message_usage = self._translate(source_lang, target_lang, text_before, user_name, "Telegram:{}|{}|{}".format(user_name, chat_type, group_title))
                 print(message)
-                self._sendMessage(apiEndpoint_send, chat_id, message_id, message)
-                self._sendNormalMessage(apiEndpoint_send, chat_id, message_usage)
+                self._sendMessage(apiEndpoint_edit, new_chat_id, new_message_id, message)
 
         self._writeUpdate("ge", "ge", update_id)
 
