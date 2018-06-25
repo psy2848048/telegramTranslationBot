@@ -86,18 +86,22 @@ class TranslatorBot(object):
             message += "Google:\n*{}*\n\n".format(result_google)
             message += "Powered by LangChain"
 
-            message_usage  = "Usage: !'Source language''Target language' 'Sentence'\n"
+            message_usage += "Usage: !'Source language''Target language' 'Sentence'\n"
             message_usage += "Ex) !enko Hello?\n\n"
-            message_usage += "Korean - ko / English - en / Japanese - ja / Chinese - zh\nThai - th / Spanish - es / Portuguese - pt / Vietnamese - vi\nGerman - de / French - fr"
+            message_usage += "Korean - ko / English - en / Japanese - ja\nChinese - zh / Thai - th / Spanish - es\nPortuguese - pt / Vietnamese - vi / German - de\nFrench - fr / Russian - ru / Indonesian - in\n\n"
+            message_usage += "You can train @langchainbot by @LangChainTrainerbot and get LangChain point!"
+
         else:
             message = "Google:\n*{}*\n\n".format(result_google)
             if result_human is not None:
                 message += "Human guided:\n*{}*\n\n".format(result_human)
             message += "Powered by LangChain"
 
-            message_usage  = "Usage: !'Source language''Target language' 'Sentence'\n"
+            message_usage += "Usage: !'Source language''Target language' 'Sentence'\n"
             message_usage += "Ex) !enko Hello?\n\n"
-            message_usage += "Korean - ko / English - en / Japanese - ja / Chinese - zh\nThai - th / Spanish - es / Portuguese - pt / Vietnamese - vi\nGerman - de / French - fr"
+            message_usage += "Korean - ko / English - en / Japanese - ja\nChinese - zh / Thai - th / Spanish - es\nPortuguese - pt / Vietnamese - vi / German - de\nFrench - fr / Russian - ru / Indonesian - in\n\n"
+            message_usage += "You can train @langchainbot by @LangChainTrainerbot and get LangChain point!"
+
 
         return message, message_usage
 
@@ -222,7 +226,16 @@ class TranslatorBot(object):
             else:
                 text_before = text_before.strip()
 
-            if text_before.startswith(wakeup_key):
+            if text_before == '/start' or text_before == '/help':
+                message_usage  = "*Welcome to LangChain Translation Bot!*\n"
+                message_usage += "Use translator without external translation app!\n\n"
+                message_usage += "Usage: !'Source language''Target language' 'Sentence'\n"
+                message_usage += "Ex) !enko Hello?\n\n"
+                message_usage += "Korean - ko / English - en / Japanese - ja\nChinese - zh / Thai - th / Spanish - es\nPortuguese - pt / Vietnamese - vi / German - de\nFrench - fr / Russian - ru / Indonesian - in\n\n"
+                message_usage += "You can train @langchainbot by @LangChainTrainerbot and get LangChain point!"
+                self._sendNormalMessage(apiEndpoint_send, chat_id, message_usage)
+
+            elif text_before.startswith(wakeup_key):
                 ret = self._sendMessage(apiEndpoint_send, chat_id, message_id, "Translating...")
 
                 new_chat_id = ret['result']['chat']['id']
