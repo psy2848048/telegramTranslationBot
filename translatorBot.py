@@ -86,7 +86,7 @@ class TranslatorBot(object):
             message += "Google:\n*{}*\n\n".format(result_google)
             message += "Powered by LangChain"
 
-            message_usage += "Usage: !'Source language''Target language' 'Sentence'\n"
+            message_usage  = "Usage: !'Source language''Target language' 'Sentence'\n"
             message_usage += "Ex) !enko Hello?\n\n"
             message_usage += "Korean - ko / English - en / Japanese - ja\nChinese - zh / Thai - th / Spanish - es\nPortuguese - pt / Vietnamese - vi / German - de\nFrench - fr / Russian - ru / Indonesian - in\n\n"
             message_usage += "You can train @langchainbot by @LangChainTrainerbot and get LangChain point!"
@@ -97,7 +97,7 @@ class TranslatorBot(object):
                 message += "Human guided:\n*{}*\n\n".format(result_human)
             message += "Powered by LangChain"
 
-            message_usage += "Usage: !'Source language''Target language' 'Sentence'\n"
+            message_usage  = "Usage: !'Source language''Target language' 'Sentence'\n"
             message_usage += "Ex) !enko Hello?\n\n"
             message_usage += "Korean - ko / English - en / Japanese - ja\nChinese - zh / Thai - th / Spanish - es\nPortuguese - pt / Vietnamese - vi / German - de\nFrench - fr / Russian - ru / Indonesian - in\n\n"
             message_usage += "You can train @langchainbot by @LangChainTrainerbot and get LangChain point!"
