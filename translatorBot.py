@@ -1,5 +1,6 @@
 import requests
 import json
+import re
 
 
 class TranslatorBot(object):
@@ -236,14 +237,16 @@ class TranslatorBot(object):
                 self._sendNormalMessage(apiEndpoint_send, chat_id, message_usage)
 
             elif text_before.startswith(wakeup_key):
+                lang_obj = re.search(r'\A!([a-z]{2})([a-z]{2})', text_before)
+                if lang_obj == None:
+                    continue
+
                 ret = self._sendMessage(apiEndpoint_send, chat_id, message_id, "Translating...")
 
+                source_lang = lang_obj.group(1)
+                target_lang = lang_obj.group(2)
                 new_chat_id = ret['result']['chat']['id']
                 new_message_id = ret['result']['message_id']
-
-                language_pair = text_before[:5]
-                source_lang = language_pair[1:3]
-                target_lang = language_pair[3:5]
 
                 text_before = text_before.replace(language_pair, '').strip()
                 print(text_before)
