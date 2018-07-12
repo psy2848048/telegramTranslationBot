@@ -243,6 +243,7 @@ class TranslatorBot(object):
 
                 ret = self._sendMessage(apiEndpoint_send, chat_id, message_id, "Translating...")
 
+                language_pair = lang_obj.group(0)
                 source_lang = lang_obj.group(1)
                 target_lang = lang_obj.group(2)
                 new_chat_id = ret['result']['chat']['id']
