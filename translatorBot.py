@@ -1,11 +1,13 @@
 import requests
 import json
 import re
+from function import TelegramBotAction
 
 
 class TranslatorBot(object):
     def __init__(self):
         self.keys = self._readAPIKey()
+        self.action = TelegramBotAction(self.keys['gege'])
 
     def _readLastUpdate(self, source_lang, target_lang):
         try:
@@ -222,6 +224,10 @@ class TranslatorBot(object):
             user_name = item['message'].get('from').get('username')
             chat_type = item['message']['chat']['type']
             group_title = item['message']['chat'].get('title')
+            id_external = item['message']['from'].get('id')
+
+            user_info = self.action._getId(id_external, chat_id=chat_id, text_id=user_name)
+            
             if text_before is None:
                 continue
             else:
