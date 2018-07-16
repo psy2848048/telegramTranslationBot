@@ -226,12 +226,12 @@ class TranslatorBot(object):
             group_title = item['message']['chat'].get('title')
             id_external = item['message']['from'].get('id')
 
-            user_info = self.action._getId(id_external, chat_id=chat_id, text_id=user_name)
-            
             if text_before is None:
                 continue
             else:
                 text_before = text_before.strip()
+
+            user_info = self.action._getId(id_external, chat_id=chat_id, text_id=user_name)
 
             if text_before == '/start' or text_before == '/help':
                 message_usage  = "*Welcome to LangChain Translation Bot!*\n"
