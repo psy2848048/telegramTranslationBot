@@ -231,9 +231,9 @@ class TranslatorBot(object):
             else:
                 text_before = text_before.strip()
 
-            user_info = self.action._getId(id_external, chat_id=chat_id, text_id=user_name)
 
             if text_before == '/start' or text_before == '/help':
+                user_info = self.action._getId(id_external, chat_id=chat_id, text_id=user_name)
                 message_usage  = "*Welcome to LangChain Translation Bot!*\n"
                 message_usage += "Use translator without external translation app!\n\n"
                 message_usage += "Usage: !'Source language''Target language' 'Sentence'\n"
@@ -243,6 +243,7 @@ class TranslatorBot(object):
                 self._sendNormalMessage(apiEndpoint_send, chat_id, message_usage)
 
             elif text_before.startswith(wakeup_key):
+                user_info = self.action._getId(id_external, chat_id=chat_id, text_id=user_name)
                 lang_obj = re.search(r'\A!([a-z]{2})([a-z]{2})', text_before)
                 if lang_obj == None:
                     continue
