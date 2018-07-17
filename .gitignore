@@ -1,3 +1,5 @@
 apikey.json
 getMail.txt
 lastupdate*
+.idea/
+__pycache__/
