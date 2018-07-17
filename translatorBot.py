@@ -89,10 +89,13 @@ class TranslatorBot(object):
             message += "Google:\n*{}*\n\n".format(result_google)
             message += "Powered by LangChain"
 
-            message_usage  = "How to use: !'Source language''Target language' 'Sentence'\n"
+            message_usage  = "✔️How to use\n!'Source language''Target language' 'Sentence'\n"
             message_usage += "Ex) !enko It's such a beautiful day\n\n"
-            message_usage += "Korean - ko / English - en / Japanese - ja\nChinese - zh / Thai - th / Spanish - es\nPortuguese - pt / Vietnamese - vi / German - de\nFrench - fr / Russian - ru / Indonesian - in\n\n"
-            message_usage += "You can get points by using the Translation bot."
+            message_usage += "```\nKorean: ko \t\t/ English: en \t/ Japanese: ja \n"
+            message_usage += "Chinese: zh \t/ Thai: th \t\t\t\t/ Indonesian: in \n"
+            message_usage += "German: de \t\t/ Russian: ru \t/ Vietnamese: vi \n"
+            message_usage += "French: fr \t\t/ Spanish: es \t/ Portuguese: pt```\n\n"
+            message_usage += "You can get points by using the Translation bot.\n"
             message_usage += "Put only a sentence."
 
         else:
@@ -101,10 +104,13 @@ class TranslatorBot(object):
                 message += "Human guided:\n*{}*\n\n".format(result_human)
             message += "Powered by LangChain"
 
-            message_usage  = "How to use: !'Source language''Target language' 'Sentence'\n"
+            message_usage  = "✔️How to use\n!'Source language''Target language' 'Sentence'\n"
             message_usage += "Ex) !enko It's such a beautiful day\n\n"
-            message_usage += "Korean - ko / English - en / Japanese - ja\nChinese - zh / Thai - th / Spanish - es\nPortuguese - pt / Vietnamese - vi / German - de\nFrench - fr / Russian - ru / Indonesian - in\n\n"
-            message_usage += "You can get points by using the Translation bot."
+            message_usage += "```\nKorean: ko \t\t/ English: en \t/ Japanese: ja \n"
+            message_usage += "Chinese: zh \t/ Thai: th \t\t\t\t/ Indonesian: in \n"
+            message_usage += "German: de \t\t/ Russian: ru \t/ Vietnamese: vi \n"
+            message_usage += "French: fr \t\t/ Spanish: es \t/ Portuguese: pt```\n\n"
+            message_usage += "You can get points by using the Translation bot.\n"
             message_usage += "Put only a sentence."
 
         return message, message_usage
@@ -237,10 +243,13 @@ class TranslatorBot(object):
                 user_info = self.action._getId(id_external, chat_id=chat_id, text_id=user_name)
                 message_usage  = "*Welcome to LangChain Translation Bot!*\n"
                 message_usage += "Use translator without external translation app!\n\n"
-                message_usage += "How to use: !'Source language''Target language' 'Sentence'\n"
+                message_usage += "✔️How to use\n!'Source language''Target language' 'Sentence'\n"
                 message_usage += "Ex) !enko It's such a beautiful day\n\n"
-                message_usage += "Korean - ko / English - en / Japanese - ja\nChinese - zh / Thai - th / Spanish - es\nPortuguese - pt / Vietnamese - vi / German - de\nFrench - fr / Russian - ru / Indonesian - in\n\n"
-                message_usage += "You can get points by using the Translation bot."
+                message_usage += "```\nKorean: ko \t\t/ English: en \t/ Japanese: ja \n"
+                message_usage += "Chinese: zh \t/ Thai: th \t\t\t\t/ Indonesian: in \n"
+                message_usage += "German: de \t\t/ Russian: ru \t/ Vietnamese: vi \n"
+                message_usage += "French: fr \t\t/ Spanish: es \t/ Portuguese: pt```\n\n"
+                message_usage += "You can get points by using the Translation bot.\n"
                 message_usage += "Put only a sentence."
                 self._sendNormalMessage(apiEndpoint_send, chat_id, message_usage)
 
