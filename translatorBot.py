@@ -91,10 +91,12 @@ class TranslatorBot(object):
 
         message_usage  = "✔️How to use\n!'Source language''Target language' 'Sentence'\n"
         message_usage += "Ex) !enko It's such a beautiful day\n\n"
-        message_usage += "Korean: ko \t\t/ English: en \t/ Japanese: ja \n"
-        message_usage += "Chinese: zh \t/ Thai: th \t\t\t\t/ Indonesian: in \n"
-        message_usage += "German: de \t\t/ Russian: ru \t/ Vietnamese: vi \n"
-        message_usage += "French: fr \t\t/ Spanish: es \t/ Portuguese: pt```\n\n"
+        message_usage += "Korean: ko \t\t/ English: en\n"
+        message_usage += "Chinese: zh / Japanese: ja\n"
+        message_usage += "Russian: ru \t/ Indonesian: in\n"
+        message_usage += "German: de / Thai: th\n"
+        message_usage += "French: fr \t\t\t/ Vietnamese: vi\n"
+        message_usage += "Spanish: es / Portuguese: pt\n\n"
         message_usage += "You can get points by using the Translation bot.\n"
         message_usage += "Put only a sentence."
 
