@@ -85,8 +85,8 @@ class TranslatorBot(object):
         message += "Google:\n*{}*\n\n\n".format(result_google)
 
         message += "You can train @langchainbot by @LangChainTrainerbot and get Frontier point!\n\n"
-        message += "You’ve entered X sentences.\n".format(sentence_cnt)
-        message += "You got X points.\n\n".format(total_point)
+        message += "You’ve entered {} sentences.\n".format(sentence_cnt)
+        message += "You got {} points.\n\n".format(total_point)
         message += "_Powered by LangChain_"
 
         message_usage  = "✔️How to use\n!'Source language''Target language' 'Sentence'\n"
