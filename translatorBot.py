@@ -50,7 +50,7 @@ class TranslatorBot(object):
                 }
         return lang_table.get(lang)
 
-    def _translate(self, sentence_cnt, total_point, source_lang, target_lang, sentence, order_user, memo):
+    def _translate(self, id_external, chat_id, user_name, source_lang, target_lang, sentence, order_user, memo):
         endpoint = "http://langChainext-5c6a881e9c24431b.elb.ap-northeast-1.amazonaws.com:5000/api/v2/internal/translate"
         payload = {
                     "source_lang": source_lang
@@ -77,14 +77,16 @@ class TranslatorBot(object):
         except:
             data = {"ciceron":"Not enough servers. Investment is required.", 'google':""}
 
-        result_ciceron = data.get('ciceron')
-        result_google = data.get('google')
-        result_human = data.get('human', '_No result_')
+        result_ciceron = data.get('ciceron', '(No result)')
+        result_google = data.get('google', '(No result)')
+        result_human = data.get('human', '(No result)')
 
-        message = ""
-        if source_lang in ["en", "ko"] and target_lang in ["en", "ko"]:
-            message = "LangChainMachineTranslator:\n*{}*\n\n".format(result_ciceron)
+        if len(result_ciceron) < 1:
+            result_ciceron = '(No result)'
+        if result_human is None:
+            result_human = '(No result)'
 
+        message = "LangChainMachineTranslator:\n*{}*\n\n".format(result_ciceron)
         # if result_human is not None:
         #     message += "LangChainTrainerbot:\n*{}*\n\n".format(result_human)
         message += "LangChainTrainerbot:\n*{}*\n\n".format(result_human)
@@ -200,10 +202,12 @@ class TranslatorBot(object):
                 message_usage += "Use translator without external translation app!\n\n"
                 message_usage += "✔️How to use\n!'Source language''Target language' 'Sentence'\n"
                 message_usage += "Ex) !enko It's such a beautiful day\n\n"
-                message_usage += "```\nKorean: ko \t\t/ English: en \t/ Japanese: ja \n"
-                message_usage += "Chinese: zh \t/ Thai: th \t\t\t\t/ Indonesian: in \n"
-                message_usage += "German: de \t\t/ Russian: ru \t/ Vietnamese: vi \n"
-                message_usage += "French: fr \t\t/ Spanish: es \t/ Portuguese: pt```\n\n"
+                message_usage += "Korean: ko \t\t/ English: en\n"
+                message_usage += "Chinese: zh / Japanese: ja\n"
+                message_usage += "Russian: ru \t/ Indonesian: in\n"
+                message_usage += "German: de / Thai: th\n"
+                message_usage += "French: fr \t\t\t/ Vietnamese: vi\n"
+                message_usage += "Spanish: es / Portuguese: pt\n\n"
                 message_usage += "You can get points by using the Translation bot.\n"
                 message_usage += "Put only a sentence."
                 self._sendNormalMessage(apiEndpoint_send, chat_id, message_usage)
