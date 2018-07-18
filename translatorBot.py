@@ -3,6 +3,17 @@ import json
 import re
 from function import TelegramBotAction
 
+how_to_use = """✔️How to use
+!'Source language''Target language' 'Sentence'
+Ex) !enko It's such a beautiful day
+
+🇰🇷 ko \t🇺🇸 en  🇨🇳 zh  🇯🇵 ja
+🇷🇺 ru\t\t🇮🇩 in\t\t\t🇩🇪 de  🇹🇭 th
+🇫🇷 fr\t\t\t🇻🇳 vi\t\t\t🇪🇸 es\t\t 🇵🇹 pt
+
+You can get _frontier points_ by using the Translation bot.
+Please put sentence by sentence.
+"""
 
 class TranslatorBot(object):
     def __init__(self):
@@ -68,47 +79,27 @@ class TranslatorBot(object):
         try:
             resp = requests.post(endpoint, data=payload, headers=headers, timeout=10, verify=False)
             data = resp.json() if resp.status_code == 200 else {"ciceron":"Not enough servers. Investment is required.", 'google':""}
-
-            user_info = self.action._getId(id_external, chat_id=chat_id, text_id=user_name)
-            sentence_cnt = user_info['sentence_cnt']
-            total_point = 0
-            for p in user_info['point']:
-                total_point += p['point']
         except:
             data = {"ciceron":"Not enough servers. Investment is required.", 'google':""}
 
-        result_ciceron = data.get('ciceron', '(No result)')
-        result_google = data.get('google', '(No result)')
-        result_human = data.get('human', '(No result)')
+        result_ciceron = data.get('ciceron', None)
+        result_google = data.get('google', None)
+        result_human = data.get('human', None)
 
-        if len(result_ciceron) < 1:
+        if result_ciceron is None or len(result_ciceron) < 1:
             result_ciceron = '(No result)'
-        if result_human is None:
-            result_human = '(No result)'
+        message = "LangChain Machine Translation:\n*{}*\n\n".format(result_ciceron)
 
-        message = "LangChainMachineTranslator:\n*{}*\n\n".format(result_ciceron)
-        # if result_human is not None:
-        #     message += "LangChainTrainerbot:\n*{}*\n\n".format(result_human)
-        message += "LangChainTrainerbot:\n*{}*\n\n".format(result_human)
-        message += "Google:\n*{}*\n\n\n".format(result_google)
+        if result_human is None or len(result_human) < 1:
+            result_human = '(No result)'
+            message += "LangChain Trainerbot:\n*{}*\n\n".format(result_human)
+            message += "General Translation:\n*{}*\n\n\n".format(result_google)
+        elif len(result_human) > 1:
+            message += "LangChain Trainerbot:\n*{}*\n\n".format(result_human)
 
         message += "You can train @langchainbot by @LangChainTrainerbot and get Frontier point!\n\n"
-        message += "You’ve entered {} sentences.\n".format(sentence_cnt)
-        message += "You got {} points.\n\n".format(total_point)
         message += "_Powered by LangChain_"
-
-        message_usage  = "✔️How to use\n!'Source language''Target language' 'Sentence'\n"
-        message_usage += "Ex) !enko It's such a beautiful day\n\n"
-        message_usage += "Korean: ko \t\t/ English: en\n"
-        message_usage += "Chinese: zh / Japanese: ja\n"
-        message_usage += "Russian: ru \t/ Indonesian: in\n"
-        message_usage += "German: de / Thai: th\n"
-        message_usage += "French: fr \t\t\t/ Vietnamese: vi\n"
-        message_usage += "Spanish: es / Portuguese: pt\n\n"
-        message_usage += "You can get points by using the Translation bot.\n"
-        message_usage += "Put only a sentence."
-
-        return message, message_usage
+        return message, how_to_use
 
     def _sendMessage(self, api_endpoint, chat_id, message_id, message):
         payload = {
@@ -200,16 +191,7 @@ class TranslatorBot(object):
                 user_info = self.action._getId(id_external, chat_id=chat_id, text_id=user_name)
                 message_usage  = "*Welcome to LangChain Translation Bot!*\n"
                 message_usage += "Use translator without external translation app!\n\n"
-                message_usage += "✔️How to use\n!'Source language''Target language' 'Sentence'\n"
-                message_usage += "Ex) !enko It's such a beautiful day\n\n"
-                message_usage += "Korean: ko \t\t/ English: en\n"
-                message_usage += "Chinese: zh / Japanese: ja\n"
-                message_usage += "Russian: ru \t/ Indonesian: in\n"
-                message_usage += "German: de / Thai: th\n"
-                message_usage += "French: fr \t\t\t/ Vietnamese: vi\n"
-                message_usage += "Spanish: es / Portuguese: pt\n\n"
-                message_usage += "You can get points by using the Translation bot.\n"
-                message_usage += "Put only a sentence."
+                message_usage += how_to_use
                 self._sendNormalMessage(apiEndpoint_send, chat_id, message_usage)
 
             elif text_before.startswith(wakeup_key):
