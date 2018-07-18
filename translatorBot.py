@@ -58,6 +58,7 @@ class TranslatorBot(object):
                   , "sentence": sentence
                   , "tag": "telegram"
                   , "order_user": order_user
+                  , "id_external": id_external
                   , "media": "telegram"
                   , "where_contributed": "telegram"
                   , "memo": memo
@@ -68,6 +69,11 @@ class TranslatorBot(object):
             resp = requests.post(endpoint, data=payload, headers=headers, timeout=10, verify=False)
             data = resp.json() if resp.status_code == 200 else {"ciceron":"Not enough servers. Investment is required.", 'google':""}
 
+            user_info = self.action._getId(id_external, chat_id=chat_id, text_id=user_name)
+            sentence_cnt = user_info['sentence_cnt']
+            total_point = 0
+            for p in user_info['point']:
+                total_point += p['point']
         except:
             data = {"ciceron":"Not enough servers. Investment is required.", 'google':""}
 
@@ -203,12 +209,6 @@ class TranslatorBot(object):
                 self._sendNormalMessage(apiEndpoint_send, chat_id, message_usage)
 
             elif text_before.startswith(wakeup_key):
-                user_info = self.action._getId(id_external, chat_id=chat_id, text_id=user_name)
-                sentence_cnt = user_info['sentence_cnt']
-                total_point = 0
-                for p in user_info['point']:
-                    total_point += p['point']
-
                 lang_obj = re.search(r'\A!([a-z]{2})([a-z]{2})', text_before)
                 if lang_obj == None:
                     continue
@@ -223,7 +223,7 @@ class TranslatorBot(object):
 
                 text_before = text_before.replace(language_pair, '').strip()
                 print(text_before)
-                message, message_usage = self._translate(sentence_cnt, total_point, source_lang, target_lang, text_before, user_name, "Telegram:{}|{}|{}".format(user_name, chat_type, group_title))
+                message, message_usage = self._translate(id_external, chat_id, user_name, source_lang, target_lang, text_before, user_name, "Telegram:{}|{}|{}".format(user_name, chat_type, group_title))
                 print(message)
                 self._editMessage(apiEndpoint_edit, new_chat_id, new_message_id, message)
                 self._sendNormalMessage(apiEndpoint_send, chat_id, message_usage)
