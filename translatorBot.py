@@ -79,33 +79,25 @@ class TranslatorBot(object):
         try:
             resp = requests.post(endpoint, data=payload, headers=headers, timeout=10, verify=False)
             data = resp.json() if resp.status_code == 200 else {"ciceron":"Not enough servers. Investment is required.", 'google':""}
-
-            user_info = self.action._getId(id_external, chat_id=chat_id, text_id=user_name)
-            sentence_cnt = user_info['sentence_cnt']
-            total_point = 0
-            for p in user_info['point']:
-                total_point += p['point']
         except:
             data = {"ciceron":"Not enough servers. Investment is required.", 'google':""}
 
-        result_ciceron = data.get('ciceron', '(No result)')
-        result_google = data.get('google', '(No result)')
-        result_human = data.get('human', '(No result)')
+        result_ciceron = data.get('ciceron', None)
+        result_google = data.get('google', None)
+        result_human = data.get('human', None)
 
-        if len(result_ciceron) < 1:
+        if result_ciceron is None or len(result_ciceron) < 1:
             result_ciceron = '(No result)'
-        if result_human is None:
-            result_human = '(No result)'
+        message = "LangChain Machine Translation:\n*{}*\n\n".format(result_ciceron)
 
-        message = "LangChainMachineTranslator:\n*{}*\n\n".format(result_ciceron)
-        # if result_human is not None:
-        #     message += "LangChainTrainerbot:\n*{}*\n\n".format(result_human)
-        message += "LangChainTrainerbot:\n*{}*\n\n".format(result_human)
-        message += "Google:\n*{}*\n\n\n".format(result_google)
+        if result_human is None or len(result_human) < 1:
+            result_human = '(No result)'
+            message += "LangChain Trainerbot:\n*{}*\n\n".format(result_human)
+            message += "General Translation:\n*{}*\n\n\n".format(result_google)
+        elif len(result_human) > 1:
+            message += "LangChain Trainerbot:\n*{}*\n\n".format(result_human)
 
         message += "You can train @langchainbot by @LangChainTrainerbot and get Frontier point!\n\n"
-        message += "You’ve entered {} sentences.\n".format(sentence_cnt)
-        message += "You got {} points.\n\n".format(total_point)
         message += "_Powered by LangChain_"
         return message, how_to_use
 
