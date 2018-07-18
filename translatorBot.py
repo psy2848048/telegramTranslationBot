@@ -51,7 +51,7 @@ class TranslatorBot(object):
         return lang_table.get(lang)
 
     def _translate(self, id_external, chat_id, user_name, source_lang, target_lang, sentence, order_user, memo):
-        endpoint = "http://translator.ciceron.me:5000/api/v2/internal/translate"
+        endpoint = "http://langChainext-5c6a881e9c24431b.elb.ap-northeast-1.amazonaws.com:5000/api/v2/internal/translate"
         payload = {
                     "source_lang": source_lang
                   , "target_lang": target_lang
