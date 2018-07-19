@@ -11,8 +11,8 @@ Ex) !enko It's such a beautiful day
 🇷🇺 ru\t\t🇮🇩 in\t\t\t🇩🇪 de  🇹🇭 th
 🇫🇷 fr\t\t\t🇻🇳 vi\t\t\t🇪🇸 es\t\t 🇵🇹 pt
 
-You can get _frontier points_ by using the Translation bot.
-Please put sentence by sentence.
+📌You can get _frontier points_ by using the Translation bot.
+📌Please put _sentence by sentence_.
 """
 
 class TranslatorBot(object):
@@ -80,25 +80,38 @@ class TranslatorBot(object):
             resp = requests.post(endpoint, data=payload, headers=headers, timeout=10, verify=False)
             data = resp.json() if resp.status_code == 200 else {"ciceron":"Not enough servers. Investment is required.", 'google':""}
         except:
-            data = {"ciceron":"Not enough servers. Investment is required.", 'google':""}
+            data = {
+                "ciceron": "Not enough servers. Investment is required.",
+                "google": None,
+                "human": None
+            }
 
-        result_ciceron = data.get('ciceron', None)
+        # result_ciceron = data.get('ciceron', None)
         result_google = data.get('google', None)
         result_human = data.get('human', None)
 
-        if result_ciceron is None or len(result_ciceron) < 1:
-            result_ciceron = '(No result)'
-        message = "LangChain Machine Translation:\n*{}*\n\n".format(result_ciceron)
+        # if result_ciceron is None or len(result_ciceron) < 1:
+        #     result_ciceron = '(No result)'
+        # message = "LangChain Machine Translation:\n*{}*\n\n".format(result_ciceron)
+        #
+        # if result_human is None or len(result_human) < 1:
+        #     result_human = '(No result)'
+        #     message += "LangChain Trainerbot:\n*{}*\n\n".format(result_human)
+        #     message += "General Translation:\n*{}*\n\n\n".format(result_google)
+        # elif len(result_human) > 1:
+        #     message += "LangChain Trainerbot:\n*{}*\n\n".format(result_human)
+        #
+        # message += "You can train @langchainbot by @LangChainTrainerbot and get Frontier point!\n\n"
+        # message += "_Powered by LangChain_"
 
-        if result_human is None or len(result_human) < 1:
-            result_human = '(No result)'
-            message += "LangChain Trainerbot:\n*{}*\n\n".format(result_human)
-            message += "General Translation:\n*{}*\n\n\n".format(result_google)
-        elif len(result_human) > 1:
-            message += "LangChain Trainerbot:\n*{}*\n\n".format(result_human)
+        if result_human is not None:
+            print('human', result_human)
+            message = "*{}*\n\n".format(result_human)
+        else:
+            print('google', result_google)
+            message = "*{}*\n\n".format(result_google)
 
-        message += "You can train @langchainbot by @LangChainTrainerbot and get Frontier point!\n\n"
-        message += "_Powered by LangChain_"
+        message += "_Powered by_ @LangChainTrainerbot"
         return message, how_to_use
 
     def _sendMessage(self, api_endpoint, chat_id, message_id, message):
@@ -189,8 +202,8 @@ class TranslatorBot(object):
 
             if text_before == '/start' or text_before == '/help':
                 user_info = self.action._getId(id_external, chat_id=chat_id, text_id=user_name)
-                message_usage  = "*Welcome to LangChain Translation Bot!*\n"
-                message_usage += "Use translator without external translation app!\n\n"
+                message_usage  = "*Hi, It’s LangChain Bot*👋\n"
+                message_usage += "Use translation bot without any external translation app!\n\n"
                 message_usage += how_to_use
                 self._sendNormalMessage(apiEndpoint_send, chat_id, message_usage)
 
