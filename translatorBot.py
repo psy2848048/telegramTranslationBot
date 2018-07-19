@@ -5,7 +5,7 @@ from function import TelegramBotAction
 
 how_to_use = """✔️How to use
 !'Source language''Target language' 'Sentence'
-Ex) !enko It's such a beautiful day
+Ex) *!enko It's such a beautiful day*
 
 🇰🇷 ko \t🇺🇸 en  🇨🇳 zh  🇯🇵 ja
 🇷🇺 ru\t\t🇮🇩 in\t\t\t🇩🇪 de  🇹🇭 th
@@ -112,7 +112,7 @@ class TranslatorBot(object):
             message = "*{}*\n\n".format(result_google)
 
         message += "_Powered by_ @LangChainTrainerbot"
-        return message, how_to_use
+        return message
 
     def _sendMessage(self, api_endpoint, chat_id, message_id, message):
         payload = {
@@ -212,7 +212,7 @@ class TranslatorBot(object):
                 if lang_obj == None:
                     continue
 
-                ret = self._sendMessage(apiEndpoint_send, chat_id, message_id, "Translating...")
+                ret = self._sendMessage(apiEndpoint_send, chat_id, message_id, "_Translating..._\n\n"+how_to_use)
 
                 language_pair = lang_obj.group(0)
                 source_lang = lang_obj.group(1)
@@ -222,10 +222,10 @@ class TranslatorBot(object):
 
                 text_before = text_before.replace(language_pair, '').strip()
                 print(text_before)
-                message, message_usage = self._translate(id_external, chat_id, user_name, source_lang, target_lang, text_before, user_name, "Telegram:{}|{}|{}".format(user_name, chat_type, group_title))
+                message = self._translate(id_external, chat_id, user_name, source_lang, target_lang, text_before, user_name, "Telegram:{}|{}|{}".format(user_name, chat_type, group_title))
                 print(message)
                 self._editMessage(apiEndpoint_edit, new_chat_id, new_message_id, message)
-                self._sendNormalMessage(apiEndpoint_send, chat_id, message_usage)
+                # self._sendNormalMessage(apiEndpoint_send, chat_id, message_usage)
 
         self._writeUpdate("ge", "ge", update_id)
 
