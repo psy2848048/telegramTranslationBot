@@ -5,7 +5,7 @@ from function import TelegramBotAction
 
 how_to_use = """✔️How to use
 !'Source language''Target language' 'Sentence'
-Ex) !enko It's such a beautiful day
+Ex) *!enko It's such a beautiful day*
 
 🇰🇷 ko \t🇺🇸 en  🇨🇳 zh  🇯🇵 ja
 🇷🇺 ru\t\t🇮🇩 in\t\t\t🇩🇪 de  🇹🇭 th
